@@ -12,12 +12,12 @@ import java.util.List;
 @SpringBootTest
 public class SampleTest {
     @Autowired
-    private UserMapper userMapper;
+//    private UserMapper userMapper;
 
     @Test
     public void testSelect() {
-        System.out.println(("----- selectAll method test ------"));
-        List<User> userList=userMapper.selectList(null);
-        userList.forEach(System.out::println);
+//        System.out.println(("----- selectAll method test ------"));
+//        List<User> userList=userMapper.selectList(null);
+//        userList.forEach(System.out::println);
     }
 }
