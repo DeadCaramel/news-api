@@ -1,7 +1,7 @@
 package com.example.news_api;
 
 import com.example.news_api.entity.User;
-import com.example.news_api.mapper.UserMapper;
+//import com.example.news_api.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
