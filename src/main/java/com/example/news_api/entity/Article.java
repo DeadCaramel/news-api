@@ -23,4 +23,5 @@ public class Article {
     private String title;
     private Long thumbs_up_count;
     private String classify;
+    private String id;
 }

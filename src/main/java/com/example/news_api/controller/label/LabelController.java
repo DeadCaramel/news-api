@@ -20,7 +20,7 @@ public class LabelController {
     private LabelRepository labelRepository;
 
     @GetMapping("/get_list")
-    public String getList(@RequestParam(required = false) String name) throws Exception{
+    public String getList(@RequestParam(required = false) String name,@RequestParam(required = true) String user_id) throws Exception{
         JsonObject resultDate = new JsonObject();
         Label label = new Label();
         List<Label> list=null;
