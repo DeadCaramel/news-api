@@ -69,7 +69,58 @@ public class ArticleController {
                 }
             }
         }
-        resultDate.add("data",new Gson().toJsonTree(newlist));
+        if(newlist.size()>0){
+            resultDate.add("data",new Gson().toJsonTree(newlist));
+        }else {
+            resultDate.add("data",new Gson().toJsonTree(list));
+        }
+
+//        resultDate.add("code",new Gson().toJsonTree(200));
+//        resultDate.add("msg",new Gson().toJsonTree("success"));
+        return resultDate.toString();
+    }
+
+    @GetMapping("/get_search")
+    public String getSearch(@RequestParam(required = false) String title,@RequestParam(required = true) String user_id){
+        JsonObject resultDate = new JsonObject();
+        Article article = new Article();
+        List<Article> list=null;
+        List<Article> newlist=new ArrayList<>();
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                    .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                    .withIgnoreCase(true);
+        article.setTitle(title);
+        Example<Article> example = Example.of(article,matcher);
+        list = articleRepository.findAll(example);
+        if(!StringUtils.isEmpty(user_id)) {
+            User user = new User();
+             matcher = ExampleMatcher.matching()
+                    .withMatcher("_id",ExampleMatcher.GenericPropertyMatchers.exact())
+                    .withIgnoreCase(false);
+            user.set_id(user_id);
+            Example<User> userExample = Example.of(user,matcher);
+            user=userRepository.findOne(userExample).get();
+            String[] article_likes_ids= user.getArticle_likes_ids();
+
+            if(!ArrayUtils.isEmpty(article_likes_ids)){
+                for (Article temp : list) {
+                    ArticleVo articleVo = new ArticleVo();
+                    BeanUtils.copyProperties(temp, articleVo);
+                    if (ArrayUtils.contains(article_likes_ids , temp.getId())) {
+                        articleVo.set_like(true);
+                    }else{
+                        articleVo.set_like(false);
+                    }
+                    newlist.add(articleVo);
+                }
+            }
+        }
+        if(newlist.size()>0){
+            resultDate.add("data",new Gson().toJsonTree(newlist));
+        }else {
+            resultDate.add("data",new Gson().toJsonTree(list));
+        }
+
 //        resultDate.add("code",new Gson().toJsonTree(200));
 //        resultDate.add("msg",new Gson().toJsonTree("success"));
         return resultDate.toString();
