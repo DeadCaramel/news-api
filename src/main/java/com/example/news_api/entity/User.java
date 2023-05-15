@@ -24,4 +24,6 @@ public class User {
     private String professioncal;
     private String status;
     private String[] thembs_up_article_ids;
+
+    private String[] label_ids;
 }
