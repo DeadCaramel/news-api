@@ -2,6 +2,7 @@ package com.example.news_api.controller.label;
 
 import com.example.news_api.entity.Label;
 import com.example.news_api.entity.User;
+import com.example.news_api.entity.Vo.LabelVo;
 import com.example.news_api.repository.LabelRepository;
 import com.example.news_api.repository.UserRepository;
 import com.google.gson.Gson;
@@ -9,6 +10,7 @@ import com.google.gson.JsonObject;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -28,11 +30,11 @@ public class LabelController {
     private UserRepository userRepository;
 
     @GetMapping("/get_list")
-    public String getList(@RequestParam(required = false) String name,@RequestParam(required = true) String user_id,@RequestParam(required = false) String type) throws Exception{
+    public String getList(@RequestParam(required = false) String name,@RequestParam(required = true) String user_id,@RequestParam(required = false,defaultValue = "") String type) throws Exception{
         JsonObject resultDate = new JsonObject();
         Label label = new Label();
         List<Label> list=null;
-        List<Label> newlist=new ArrayList<>();
+        List<LabelVo> newlist=new ArrayList<>();
         if(Strings.isEmpty(name)){
             list=labelRepository.findAll();
         }else{
@@ -57,9 +59,14 @@ public class LabelController {
 
             if(!ArrayUtils.isEmpty(label_ids)){
                 for (Label temp : list) {
+                    LabelVo labelVo=new LabelVo();
+                    BeanUtils.copyProperties(temp, labelVo);
                     if (ArrayUtils.contains(label_ids , temp.get_id())) {
-                        newlist.add(temp);
+                        labelVo.setCurrent(true);
+                    }else{
+                        labelVo.setCurrent(false);
                     }
+                    newlist.add(labelVo);
                 }
             }
         }

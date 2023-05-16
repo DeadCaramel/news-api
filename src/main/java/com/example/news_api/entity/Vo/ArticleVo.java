@@ -1,4 +1,4 @@
-package Vo;
+package com.example.news_api.entity.Vo;
 
 import com.example.news_api.entity.Article;
 import lombok.Data;

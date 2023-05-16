@@ -1,6 +1,6 @@
 package com.example.news_api.controller.article;
 
-import Vo.ArticleVo;
+import com.example.news_api.entity.Vo.ArticleVo;
 import com.example.news_api.entity.Article;
 import com.example.news_api.entity.User;
 import com.example.news_api.repository.ArticleRepository;
@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.data.domain.*;
 import org.springframework.web.bind.annotation.*;
 
