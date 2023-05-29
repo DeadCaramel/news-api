@@ -6,6 +6,7 @@ import com.example.news_api.entity.Vo.LabelVo;
 import com.example.news_api.repository.LabelRepository;
 import com.example.news_api.repository.UserRepository;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,7 @@ public class LabelController {
     private UserRepository userRepository;
 
     @GetMapping("/get_list")
-    public String getList(@RequestParam(required = false) String name,@RequestParam(required = true) String user_id,@RequestParam(required = false,defaultValue = "") String type) throws Exception{
+    public String getList(@RequestParam(required = false) String name,@RequestParam(required = false) String user_id,@RequestParam(required = false,defaultValue = "") String type) throws Exception{
         JsonObject resultDate = new JsonObject();
         Label label = new Label();
         List<Label> list=null;
@@ -56,8 +57,6 @@ public class LabelController {
             Example<User> example = Example.of(user,matcher);
             user=userRepository.findOne(example).get();
             String[] label_ids= user.getLabel_ids();
-
-            if(!ArrayUtils.isEmpty(label_ids)){
                 for (Label temp : list) {
                     LabelVo labelVo=new LabelVo();
                     BeanUtils.copyProperties(temp, labelVo);
@@ -68,15 +67,58 @@ public class LabelController {
                     }
                     newlist.add(labelVo);
                 }
-            }
-        }
-        if(!type.equals("all")){
-            resultDate.add("data",new Gson().toJsonTree(newlist));
-        }else{
-            resultDate.add("data",new Gson().toJsonTree(list));
         }
 
+        resultDate.add("data",new Gson().toJsonTree(newlist));
 
+
+
+//        resultDate.add("code",new Gson().toJsonTree(200));
+//        resultDate.add("msg",new Gson().toJsonTree("success"));
+        return resultDate.toString();
+    }
+
+    @PostMapping("/update")
+    @ResponseBody
+    public String update(@RequestBody String param) throws Exception{
+        JsonObject resultDate = new JsonObject();
+        JsonObject object=new Gson().fromJson(param,JsonObject.class);
+        User user=new User();
+        user.set_id(object.get("user_id").getAsString());
+        JsonArray labelArr=object.getAsJsonArray("label_ids");
+        String[] label_ids=new String[labelArr.size()];
+        for(int i =0; i<labelArr.size();i++){
+            label_ids[i]=labelArr.get(i).getAsString();
+        }
+        user.setLabel_ids(label_ids);
+        User result=userRepository.save(user);
+        if(result!=null){
+            resultDate.add("data",new Gson().toJsonTree(result));
+        } else{
+            resultDate.add("data",new Gson().toJsonTree(""));
+        }
+//        resultDate.add("code",new Gson().toJsonTree(200));
+//        resultDate.add("msg",new Gson().toJsonTree("success"));
+        return resultDate.toString();
+    }
+
+    @GetMapping("/update")
+    public String update(@RequestParam(required = true) String[] label_ids,@RequestParam(required = true) String user_id) throws Exception{
+        JsonObject resultDate = new JsonObject();
+        User user=new User();
+        user.set_id(user_id);
+//        JsonArray labelArr=object.getAsJsonArray("label_ids");
+//        String[] label_ids=new String[labelArr.size()];
+//        for(int i =0; i<labelArr.size();i++){
+//            label_ids[i]=labelArr.get(i).getAsString();
+//        }
+        user.setLabel_ids(label_ids);
+        User result=userRepository.save(user);
+        if(result!=null){
+            resultDate.add("data",new Gson().toJsonTree(result));
+        } else{
+            resultDate.add("data",new Gson().toJsonTree(""));
+        }
 //        resultDate.add("code",new Gson().toJsonTree(200));
 //        resultDate.add("msg",new Gson().toJsonTree("success"));
         return resultDate.toString();
